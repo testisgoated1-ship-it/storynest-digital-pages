@@ -4,9 +4,7 @@ import { ArrowLeft, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
-import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
-import { Skeleton } from '@/components/ui/skeleton';
+import { stories } from '@/data/content';
 
 const videoMap: Record<string, string> = {
   'Black Characters Version': 'https://storynestmedia.org/wp-content/uploads/2025/08/dgipson-1.mp4',
@@ -16,33 +14,7 @@ const videoMap: Record<string, string> = {
 
 export default function StoryDetail() {
   const { slug } = useParams();
-
-  const { data: story, isLoading } = useQuery({
-    queryKey: ['story', slug],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('stories')
-        .select('*')
-        .eq('slug', slug)
-        .maybeSingle();
-      if (error) throw error;
-      return data;
-    },
-  });
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen">
-        <Navbar />
-        <main className="pt-24 pb-16">
-          <div className="container mx-auto px-4">
-            <Skeleton className="h-10 w-64 mb-8" />
-            <Skeleton className="h-80 w-full max-w-2xl" />
-          </div>
-        </main>
-      </div>
-    );
-  }
+  const story = stories.find((s) => s.slug === slug);
 
   if (!story) {
     return (
@@ -126,7 +98,6 @@ export default function StoryDetail() {
                     </ul>
                   </div>
                 )}
-
               </motion.div>
             </div>
           </div>

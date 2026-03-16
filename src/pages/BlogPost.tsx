@@ -3,41 +3,12 @@ import { motion } from 'framer-motion';
 import { ArrowLeft, Calendar, User } from 'lucide-react';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
-import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
-import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
+import { blogPosts } from '@/data/content';
 
 export default function BlogPost() {
   const { slug } = useParams();
-
-  const { data: post, isLoading } = useQuery({
-    queryKey: ['blog-post', slug],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('blog_posts')
-        .select('*')
-        .eq('slug', slug)
-        .maybeSingle();
-      if (error) throw error;
-      return data;
-    },
-  });
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen">
-        <Navbar />
-        <main className="pt-24 pb-16">
-          <div className="container mx-auto px-4 max-w-3xl">
-            <Skeleton className="h-10 w-64 mb-4" />
-            <Skeleton className="h-6 w-48 mb-8" />
-            <Skeleton className="h-96 w-full" />
-          </div>
-        </main>
-      </div>
-    );
-  }
+  const post = blogPosts.find((p) => p.slug === slug);
 
   if (!post) {
     return (
@@ -102,7 +73,7 @@ export default function BlogPost() {
               dangerouslySetInnerHTML={{
                 __html: post.content
                   .split('\n')
-                  .map(line => {
+                  .map((line) => {
                     if (line.startsWith('### ')) return `<h3>${line.slice(4)}</h3>`;
                     if (line.startsWith('## ')) return `<h2>${line.slice(3)}</h2>`;
                     if (line.startsWith('# ')) return `<h1>${line.slice(2)}</h1>`;
