@@ -18,9 +18,9 @@ const colorMap: Record<string, string> = {
 };
 
 const videoMap: Record<string, string> = {
-  'Black Characters Version': 'https://storynestmedia.org/wp-content/uploads/2025/08/dgipson-1.mp4',
-  'White Characters Version': 'https://storynestmedia.org/wp-content/uploads/2025/08/dgipson-2.mp4',
-  'Animated Version': 'https://storynestmedia.org/wp-content/uploads/2025/08/dgipson-3.mp4',
+  'Black Characters Version': 'https://ik.imagekit.io/goloiz0wp/dgipson-1%20(1).mp4?updatedAt=1773699467358',
+  'White Characters Version': 'https://ik.imagekit.io/goloiz0wp/dgipson-2%20(1).mp4?tr=orig',
+  'Animated Version': 'https://ik.imagekit.io/goloiz0wp/dgipson-3%20(1).mp4',
 };
 
 export default function StoriesPage() {
