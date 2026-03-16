@@ -69,17 +69,18 @@ export default function BlogPost() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="prose prose-lg max-w-none prose-headings:font-display prose-headings:text-foreground prose-p:text-muted-foreground prose-a:text-primary"
+              className="prose prose-lg max-w-none prose-headings:font-display prose-headings:text-foreground prose-headings:font-bold prose-p:text-muted-foreground prose-p:leading-relaxed prose-a:text-primary"
               dangerouslySetInnerHTML={{
                 __html: post.content
                   .split('\n')
                   .map((line) => {
-                    if (line.startsWith('### ')) return `<h3>${line.slice(4)}</h3>`;
-                    if (line.startsWith('## ')) return `<h2>${line.slice(3)}</h2>`;
-                    if (line.startsWith('# ')) return `<h1>${line.slice(2)}</h1>`;
-                    if (line.trim() === '') return '<br />';
-                    return `<p>${line}</p>`;
+                    if (line.startsWith('### ')) return `<h3 class="text-xl font-bold mt-8 mb-3">${line.slice(4)}</h3>`;
+                    if (line.startsWith('## ')) return `<h2 class="text-2xl font-bold mt-10 mb-4">${line.slice(3)}</h2>`;
+                    if (line.startsWith('# ')) return `<h1 class="text-3xl font-bold mt-10 mb-4">${line.slice(2)}</h1>`;
+                    if (line.trim() === '') return '';
+                    return `<p class="mb-4">${line}</p>`;
                   })
+                  .filter(Boolean)
                   .join(''),
               }}
             />
