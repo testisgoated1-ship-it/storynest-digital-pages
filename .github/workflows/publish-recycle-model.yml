@@ -25,43 +25,27 @@ jobs:
           python -m pip install --upgrade pip
           pip install torch torchvision onnx
 
-      - name: Find latest trained model artifact
-        id: artifact
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          set -euo pipefail
-          API="https://api.github.com/repos/${{ github.repository }}/actions/artifacts?name=waste-recycling-model&per_page=100"
-          curl -fsSL             -H "Accept: application/vnd.github+json"             -H "Authorization: Bearer $GH_TOKEN"             -H "X-GitHub-Api-Version: 2022-11-28"             "$API" > /tmp/artifacts.json
-          python - <<'PY'
-          import json
-          data=json.load(open("/tmp/artifacts.json"))
-          artifacts=[a for a in data.get("artifacts",[]) if not a.get("expired")]
-          if not artifacts:
-              raise SystemExit("No non-expired waste-recycling-model artifact found.")
-          artifacts.sort(key=lambda a: a["created_at"], reverse=True)
-          a=artifacts[0]
-          print(f"Using artifact {a['id']} created {a['created_at']}")
-          with open("/tmp/artifact.env","w") as f:
-              f.write(f"ARTIFACT_ID={a['id']}\n")
-          PY
-          cat /tmp/artifact.env >> "$GITHUB_ENV"
-
-      - name: Download latest trained model artifact
+      - name: Download known-good trained model
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           mkdir -p recycle-model-training/output
-          curl -fsSL             -H "Accept: application/vnd.github+json"             -H "Authorization: Bearer $GH_TOKEN"             -H "X-GitHub-Api-Version: 2022-11-28"             "https://api.github.com/repos/${{ github.repository }}/actions/artifacts/$ARTIFACT_ID/zip"             -o /tmp/model.zip
+          ARTIFACT_ID=10673887320
+          curl -fsSL \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/${{ github.repository }}/actions/artifacts/$ARTIFACT_ID/zip" \
+            -o /tmp/model.zip
           unzip -t /tmp/model.zip
           unzip -o /tmp/model.zip -d recycle-model-training/output
-          test -f recycle-model-training/output/waste_recycling_resnet18.pt
+          test -s recycle-model-training/output/waste_recycling_resnet18.pt
 
       - name: Export and validate ONNX model
         run: python recycle-model-training/export_onnx.py
 
-      - name: Publish model to website
+      - name: Publish model
         run: |
           set -euo pipefail
           mkdir -p public
