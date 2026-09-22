@@ -1,1 +1,2 @@
-Publish the already-trained recycling model artifact 10673887320. Do not retrain.
+Publish existing trained model. Do not train.
+1790046128659
