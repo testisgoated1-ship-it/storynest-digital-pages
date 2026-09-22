@@ -9,6 +9,7 @@ on:
 
 permissions:
   contents: write
+  actions: read
 
 jobs:
   publish:
@@ -26,21 +27,19 @@ jobs:
           pip install torch torchvision onnx
 
       - name: Download known-good trained model
-        env:
-          GH_TOKEN: ${{ github.token }}
+        uses: actions/download-artifact@v4
+        with:
+          name: waste-recycling-model
+          path: recycle-model-training/output
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: 35672738858
+
+      - name: Verify trained model artifact
         run: |
           set -euo pipefail
-          mkdir -p recycle-model-training/output
-          ARTIFACT_ID=10673887320
-          curl -fsSL \
-            -H "Accept: application/vnd.github+json" \
-            -H "Authorization: Bearer $GH_TOKEN" \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
-            "https://api.github.com/repos/${{ github.repository }}/actions/artifacts/$ARTIFACT_ID/zip" \
-            -o /tmp/model.zip
-          unzip -t /tmp/model.zip
-          unzip -o /tmp/model.zip -d recycle-model-training/output
           test -s recycle-model-training/output/waste_recycling_resnet18.pt
+          echo "Using existing trained model artifact. No training step is present."
 
       - name: Export and validate ONNX model
         run: python recycle-model-training/export_onnx.py
