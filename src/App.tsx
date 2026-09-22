@@ -8,6 +8,7 @@ import Stories from "./pages/Stories";
 import StoryDetail from "./pages/StoryDetail";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
+import Scan from "./pages/Scan";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,6 +25,7 @@ const App = () => (
           <Route path="/stories/:slug" element={<StoryDetail />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/:slug" element={<BlogPost />} />
+          <Route path="/recycle" element={<Scan />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
