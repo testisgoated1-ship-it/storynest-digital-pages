@@ -1,2 +1,3 @@
 Publish existing trained model. Do not train.
 1790046128659
+DEPLOY_RETRY=2
